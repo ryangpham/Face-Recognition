@@ -43,3 +43,26 @@ while True:
         cv2.putText(frame, (x, y), (x+w, y+h), (50, 50, 255), 1)
         attendance = [str(output[0]), str(timestamp)]
     img_bg[162:162+480, 55:55+640] = frame
+
+    cv2.imshow("frame", img_bg)
+    k = cv2.waitKey(1)
+    if k == ord('o'):
+        time.sleep(5)
+
+        if exist:
+            with open("attendance/attendance_"+date+".csv", "+a") as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow(attendance)
+            csvfile.close()
+        else:
+            with open("attendance/attendance_"+date+".csv", "+a") as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow(COL_NAMES)
+                writer.writerow(attendance)
+            csvfile.close()
+        
+        if k == ord('q'):
+            break
+
+video.release()
+cv2.destroyAllWindows()

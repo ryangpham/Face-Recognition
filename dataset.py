@@ -3,8 +3,8 @@ import numpy as np
 import os
 import pickle
 
-video = cv2.VideoCapture(0) # 0 for webcam
-face_detection = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+video = cv2.VideoCapture(0)
+face_detection = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
 face_data = []
 i = 0
@@ -19,10 +19,12 @@ while True:
         crop_img = frame[y:y+h, x:x+w, :]
         resized_img = cv2.resize(crop_img, (50, 50))
         if len(face_data) <= 100 and i % 10 == 0:
-            cv2.putText(frame, str(len(face_data)), (50, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (50, 50, 255), 1)
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (50, 50, 255), 1)
+            face_data.append(resized_img)
+        i += 1
+        cv2.putText(frame, str(len(face_data)), (50, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (50, 50, 255), 1)
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (50, 50, 255), 1)
 
-    cv2.imshow("frame", frame)
+    cv2.imshow("Frame", frame)
     k = cv2.waitKey(1)
     if len(face_data) == 50:
         break
@@ -30,7 +32,7 @@ while True:
 video.release()
 cv2.destroyAllWindows()
 
-face_data = np.array(face_data)
+face_data = np.asarray(face_data)
 face_data = face_data.reshape(100, -1)
 
 # Pickle file for student's name and attendance
