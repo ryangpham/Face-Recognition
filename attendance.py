@@ -17,8 +17,10 @@ with open('data/names.pkl', 'rb') as w:
 with open('data/face_data.pkl', 'rb') as f:
     FACES = pickle.load(f)
 
+resized_faces = [cv2.resize(face, (50, 50)).flatten() for face in FACES]
+resized_faces = np.array(resized_faces)
 knn = KNeighborsClassifier(n_neighbors=5)
-knn.fit(FACES, LABELS)
+knn.fit(resized_faces, LABELS)
 
 img_bg = cv2.imread("bg.png")
 
@@ -31,7 +33,8 @@ while True:
 
     for (x, y, w, h) in faces:
         crop_img = frame[y:y+h, x:x+w, :]
-        resized_img = cv2.resize(crop_img, (50, 50)).flatten().reshape(1, -1)
+        gray_crop_img = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+        resized_img = cv2.resize(gray_crop_img, (50, 50)).flatten().reshape(1, -1)
         output = knn.predict(resized_img)
         ts = time.time()
         date = datetime.fromtimestamp(ts).strftime("%d-%m-%Y")
@@ -40,7 +43,7 @@ while True:
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 1)
         cv2.rectangle(frame, (x, y), (x+w, y+h), (50, 50, 255), 2)
         cv2.rectangle(frame, (x, y-40), (x+w, y), (50, 50, 255), -1)
-        cv2.putText(frame, (x, y), (x+w, y+h), (50, 50, 255), 1)
+        cv2.putText(frame, str(output[0]), (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (50, 50, 255), 2)
         attendance = [str(output[0]), str(timestamp)]
     img_bg[162:162+480, 55:55+640] = frame
 
