@@ -43,7 +43,7 @@ while True:
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 1)
         cv2.rectangle(frame, (x, y), (x+w, y+h), (50, 50, 255), 2)
         cv2.rectangle(frame, (x, y-40), (x+w, y), (50, 50, 255), -1)
-        cv2.putText(frame, str(output[0]), (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (50, 50, 255), 2)
+        cv2.putText(frame, str(output[0]), (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
         attendance = [str(output[0]), str(timestamp)]
     img_bg[162:162+480, 55:55+640] = frame
 
@@ -53,19 +53,19 @@ while True:
         time.sleep(5)
 
         if exist:
-            with open("attendance/attendance_"+date+".csv", "+a") as csvfile:
+            with open("attendance/attendance_" + date + ".csv", "+a") as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerow(attendance)
             csvfile.close()
         else:
-            with open("attendance/attendance_"+date+".csv", "+a") as csvfile:
+            with open("attendance/attendance_" + date + ".csv", "+a") as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerow(COL_NAMES)
                 writer.writerow(attendance)
             csvfile.close()
         
-        if k == ord('q'):
-            break
+    if k == ord('q'):
+        break
 
 video.release()
 cv2.destroyAllWindows()
